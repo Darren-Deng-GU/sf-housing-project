@@ -155,7 +155,7 @@ s3.upload_file(
       </div>
       <div class="card card-accent-red" style="margin-bottom: 0;">
         <h4>Cross-Dataset Join</h4>
-        <p>Join permit data with Census income/rent data by geography to explore the relationship between neighborhood wealth and permit processing times.</p>
+        <p>Integrate permit, HPI, and Census datasets into unified analytical views, enabling combined analyses such as annual permit volume vs. house price trends.</p>
       </div>
     </div>
 
@@ -245,21 +245,20 @@ neighborhood_ranked = spark.sql(<span class="string">"""
       requirement for policy communication.
     </p>
 
-    <h4>9 Visualizations Produced</h4>
+    <h4>8 Visualizations Produced</h4>
     <table class="data-table">
       <thead>
         <tr><th>#</th><th>Chart</th><th>Type</th><th>Tool</th></tr>
       </thead>
       <tbody>
         <tr><td>1</td><td>Housing Types Distribution</td><td>Bar Chart</td><td>Plotly</td></tr>
-        <tr><td>2</td><td>Permits Trend (2000–2024)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>2</td><td>Permits Trend (2000–2025)</td><td>Line Chart</td><td>Plotly</td></tr>
         <tr><td>3</td><td>Change of Building Use</td><td>Sankey Diagram</td><td>Plotly</td></tr>
         <tr><td>4</td><td>Permit Processing Time</td><td>Box Plot</td><td>Plotly</td></tr>
         <tr><td>5</td><td>Top 20 Neighborhoods</td><td>Horizontal Bar</td><td>Plotly</td></tr>
-        <tr><td>6</td><td>House Price Index (1975–2024)</td><td>Line Chart</td><td>Plotly</td></tr>
-        <tr><td>7</td><td>Income vs. Processing Time</td><td>Scatter Plot</td><td>Plotly</td></tr>
-        <tr><td>8</td><td>Bay Area Median Rent Map</td><td>Choropleth Map</td><td>Folium</td></tr>
-        <tr><td>9</td><td>Permits vs. HPI (Dual-Axis)</td><td>Bar + Line</td><td>Plotly</td></tr>
+        <tr><td>6</td><td>House Price Index (1975–2025)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>7</td><td>Bay Area Median Rent Map</td><td>Interactive Map</td><td>Folium</td></tr>
+        <tr><td>8</td><td>Permits vs. HPI (Dual-Axis)</td><td>Bar + Line</td><td>Plotly</td></tr>
       </tbody>
     </table>
   </div>
@@ -289,7 +288,7 @@ pip install -r requirements.txt
 python code/01_data_ingestion.py        <span class="comment"># Download + upload to S3</span>
 <span class="comment"># → Run 02_snowflake_etl.sql in Snowflake Worksheet</span>
 <span class="comment"># → Export results to data/processed/</span>
-python code/04_generate_visualizations.py  <span class="comment"># Generate charts</span>
+python generate_charts.py               <span class="comment"># Generate 8 interactive charts</span>
     </div>
   </div>
 
