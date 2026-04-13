@@ -1,0 +1,26 @@
+# Sensitive files — NEVER commit
+upload_to_s3.py
+download_census.py
+download_census2.py
+*.env
+.env
+credentials.json
+
+# Raw data (too large for GitHub)
+data/raw/
+data/*.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

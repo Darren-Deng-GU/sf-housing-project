@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Methods &amp; Pipeline — SF Housing Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-brand">SF Housing Analysis</a>
+    <button class="nav-toggle" onclick="document.querySelector('.navbar-links').classList.toggle('open')">&#9776;</button>
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="methods.html" class="active">Methods</a></li>
+      <li><a href="findings.html">Findings</a></li>
+      <li><a href="https://github.com/Darren-Deng-GU/sf-housing-project" target="_blank">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <h1>Methods &amp; Data Pipeline</h1>
+  <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 32px;">
+    This page documents our end-to-end data pipeline—from raw data ingestion to
+    interactive visualizations. Every infrastructure choice is designed to be
+    scalable: the same code would handle datasets 1,000x larger with minimal changes.
+  </p>
+
+  <!-- ── Pipeline Diagram ── -->
+  <h2>Architecture Overview</h2>
+  <div class="pipeline">
+    <div class="pipeline-step">
+      SF Open Data<br>FRED API<br>Census API
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step alt">
+      Python<br>(requests, boto3)
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step highlight">
+      AWS S3<br>Raw Storage
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step">
+      Snowflake<br>ETL &amp; SQL
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step alt">
+      PySpark<br>(Databricks)
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step highlight">
+      Plotly / Folium<br>Visualizations
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-step">
+      GitHub Pages<br>Website
+    </div>
+  </div>
+
+  <!-- ── Phase 1: Ingestion ── -->
+  <div class="card">
+    <h2>Phase 1: Data Ingestion</h2>
+    <p>
+      All four datasets are downloaded programmatically using Python's <code>requests</code>
+      library and the respective APIs. The raw files are then uploaded to an
+      <strong>AWS S3 bucket</strong> using <code>boto3</code>, establishing S3
+      as our centralized data lake.
+    </p>
+
+    <h4>Why S3?</h4>
+    <p>
+      S3 provides durable, scalable object storage that integrates natively with
+      both Snowflake (via external stages) and Databricks (via S3 mounts).
+      For production use, this pattern supports automatic data refresh:
+      a scheduled Lambda function could re-pull data from APIs daily and
+      land new files in S3, triggering downstream ETL.
+    </p>
+
+    <div class="code-block">
+<span class="comment"># Upload to S3 (from 01_data_ingestion.py)</span>
+<span class="keyword">import</span> boto3
+
+s3 = boto3.client(<span class="string">"s3"</span>, region_name=<span class="string">"us-east-1"</span>)
+s3.upload_file(
+    <span class="string">"data/raw/Building_Permits.csv"</span>,
+    <span class="string">"sf-housing-project"</span>,
+    <span class="string">"raw/Building_Permits.csv"</span>
+)
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Dataset</th><th>Source Format</th><th>S3 Location</th><th>Approx. Size</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Building Permits</td><td>CSV</td><td><code>s3://sf-housing-project/raw/Building_Permits.csv</code></td><td>~200 MB</td></tr>
+        <tr><td>Land Use</td><td>CSV</td><td><code>s3://sf-housing-project/raw/SF_Land_Use_2023.csv</code></td><td>~30 MB</td></tr>
+        <tr><td>House Price Index</td><td>CSV</td><td><code>s3://sf-housing-project/raw/ATNHPIUS41884Q.csv</code></td><td>&lt;1 MB</td></tr>
+        <tr><td>Census ACS</td><td>JSON &rarr; CSV</td><td><code>s3://sf-housing-project/raw/census_acs_bayarea.csv</code></td><td>~2 MB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Phase 2: Snowflake ETL ── -->
+  <div class="card">
+    <h2>Phase 2: Snowflake ETL</h2>
+    <p>
+      Snowflake serves as our primary transformation engine. We chose Snowflake
+      because it provides a fully managed, columnar SQL warehouse that requires
+      zero cluster management—ideal for teams that need powerful SQL analytics
+      without DevOps overhead.
+    </p>
+
+    <h4>Infrastructure Setup</h4>
+    <p>
+      We created a dedicated database (<code>SF_HOUSING</code>) with two schemas:
+      <code>RAW</code> for staging and <code>ANALYTICS</code> for transformed data.
+      An external stage connects directly to our S3 bucket, enabling <code>COPY INTO</code>
+      commands that load CSVs into Snowflake tables in seconds.
+    </p>
+
+    <div class="code-block">
+<span class="comment">-- Load data from S3 into Snowflake</span>
+<span class="keyword">COPY INTO</span> RAW.BUILDING_PERMITS
+  <span class="keyword">FROM</span> @RAW.S3_STAGE/Building_Permits.csv
+  FILE_FORMAT = RAW.CSV_FORMAT
+  ON_ERROR = <span class="string">'CONTINUE'</span>;
+    </div>
+
+    <h4>Transformations</h4>
+    <p>
+      The <code>ANALYTICS</code> schema contains cleaned tables and analytical views.
+      Key transformations include:
+    </p>
+    <div class="card-grid">
+      <div class="card card-accent-blue" style="margin-bottom: 0;">
+        <h4>Date Parsing</h4>
+        <p>Convert string dates to timestamps using <code>TRY_TO_TIMESTAMP</code> for safe parsing with error handling.</p>
+      </div>
+      <div class="card card-accent-orange" style="margin-bottom: 0;">
+        <h4>Processing Time</h4>
+        <p>Calculate days between filing and issuance using <code>DATEDIFF</code>, filtering outliers beyond 1,000 days.</p>
+      </div>
+      <div class="card card-accent-teal" style="margin-bottom: 0;">
+        <h4>Aggregation Views</h4>
+        <p>Pre-computed views for permits trend, neighborhood rankings, change-of-use flows, and cross-analysis joins.</p>
+      </div>
+      <div class="card card-accent-red" style="margin-bottom: 0;">
+        <h4>Cross-Dataset Join</h4>
+        <p>Join permit data with Census income/rent data by geography to explore the relationship between neighborhood wealth and permit processing times.</p>
+      </div>
+    </div>
+
+    <h4 style="margin-top: 24px;">Why Snowflake over Pandas?</h4>
+    <p>
+      While this dataset fits in memory, Snowflake demonstrates a production-ready
+      pattern. If we scaled from one city to all 50 states (~50M+ permits),
+      Snowflake would handle the volume without code changes—just larger
+      warehouse sizes. The SQL-based approach also makes the pipeline
+      accessible to analysts who don't write Python.
+    </p>
+  </div>
+
+  <!-- ── Phase 3: Spark ── -->
+  <div class="card">
+    <h2>Phase 3: PySpark Analysis (Databricks)</h2>
+    <p>
+      As a complementary analysis, we processed the permits dataset using
+      <strong>PySpark on Databricks</strong> to demonstrate distributed computing
+      capabilities. This step is particularly relevant for a "what if" scenario:
+      if this analysis were expanded to cover all U.S. cities, Spark's distributed
+      execution would be essential.
+    </p>
+
+    <div class="code-block">
+<span class="comment"># Window function: rank neighborhoods by year</span>
+neighborhood_ranked = spark.sql(<span class="string">"""
+    SELECT neighborhood, issued_year, permit_count,
+           RANK() OVER (
+               PARTITION BY issued_year
+               ORDER BY permit_count DESC
+           ) AS rank_in_year
+    FROM (
+        SELECT neighborhood, issued_year,
+               COUNT(*) AS permit_count
+        FROM permits
+        GROUP BY neighborhood, issued_year
+    )
+"""</span>)
+    </div>
+
+    <h4>Key Spark Demonstrations</h4>
+    <table class="data-table">
+      <thead>
+        <tr><th>Technique</th><th>Purpose</th><th>Scalability Benefit</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Adaptive Query Execution</td>
+          <td>Auto-optimize shuffle partitions</td>
+          <td>Handles data skew automatically at scale</td>
+        </tr>
+        <tr>
+          <td>DataFrame Caching</td>
+          <td>Avoid recomputing cleaned permits</td>
+          <td>Critical when iterating on large datasets</td>
+        </tr>
+        <tr>
+          <td>Window Functions</td>
+          <td>Rank neighborhoods within each year</td>
+          <td>Efficient parallel computation across partitions</td>
+        </tr>
+        <tr>
+          <td>Coalesce + CSV Export</td>
+          <td>Single-file output for visualization</td>
+          <td>Controlled output for downstream consumers</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Phase 4: Visualization ── -->
+  <div class="card">
+    <h2>Phase 4: Visualization &amp; Delivery</h2>
+    <p>
+      Processed data is exported from Snowflake as CSV files and fed into a
+      Python visualization pipeline using <strong>Plotly</strong> (interactive charts)
+      and <strong>Folium</strong> (geographic maps). Each chart is exported as a
+      standalone HTML file and embedded in this GitHub Pages website.
+    </p>
+
+    <h4>Why Plotly + GitHub Pages?</h4>
+    <p>
+      This combination gives us rich interactivity (hover, zoom, pan) without
+      requiring a server. Every visualization loads directly in the browser,
+      making the analysis accessible to non-technical stakeholders—a key
+      requirement for policy communication.
+    </p>
+
+    <h4>9 Visualizations Produced</h4>
+    <table class="data-table">
+      <thead>
+        <tr><th>#</th><th>Chart</th><th>Type</th><th>Tool</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Housing Types Distribution</td><td>Bar Chart</td><td>Plotly</td></tr>
+        <tr><td>2</td><td>Permits Trend (2000–2024)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>3</td><td>Change of Building Use</td><td>Sankey Diagram</td><td>Plotly</td></tr>
+        <tr><td>4</td><td>Permit Processing Time</td><td>Box Plot</td><td>Plotly</td></tr>
+        <tr><td>5</td><td>Top 20 Neighborhoods</td><td>Horizontal Bar</td><td>Plotly</td></tr>
+        <tr><td>6</td><td>House Price Index (1975–2024)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>7</td><td>Income vs. Processing Time</td><td>Scatter Plot</td><td>Plotly</td></tr>
+        <tr><td>8</td><td>Bay Area Median Rent Map</td><td>Choropleth Map</td><td>Folium</td></tr>
+        <tr><td>9</td><td>Permits vs. HPI (Dual-Axis)</td><td>Bar + Line</td><td>Plotly</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Reproducibility ── -->
+  <div class="card">
+    <h2>Reproducibility</h2>
+    <p>
+      All code is available in our
+      <a href="https://github.com/Darren-Deng-GU/sf-housing-project" target="_blank">GitHub repository</a>.
+      To reproduce the full pipeline:
+    </p>
+    <div class="code-block">
+<span class="comment"># 1. Clone the repository</span>
+git clone https://github.com/Darren-Deng-GU/sf-housing-project.git
+cd sf-housing-project
+
+<span class="comment"># 2. Install Python dependencies</span>
+pip install -r requirements.txt
+
+<span class="comment"># 3. Set environment variables</span>
+<span class="keyword">export</span> AWS_ACCESS_KEY_ID=&lt;your-key&gt;
+<span class="keyword">export</span> AWS_SECRET_ACCESS_KEY=&lt;your-secret&gt;
+<span class="keyword">export</span> CENSUS_API_KEY=&lt;your-census-key&gt;
+
+<span class="comment"># 4. Run the pipeline</span>
+python code/01_data_ingestion.py        <span class="comment"># Download + upload to S3</span>
+<span class="comment"># → Run 02_snowflake_etl.sql in Snowflake Worksheet</span>
+<span class="comment"># → Export results to data/processed/</span>
+python code/04_generate_visualizations.py  <span class="comment"># Generate charts</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <h3>SF Bay Area Housing Analysis</h3>
+  <p>PPOL 5206: Massive Data Fundamentals &middot; Georgetown University &middot; Spring 2026</p>
+  <p style="margin-top: 16px;">
+    <strong>Team:</strong> Darren &middot; Marilyn Rutecki
+  </p>
+</footer>
+
+</body>
+</html>
