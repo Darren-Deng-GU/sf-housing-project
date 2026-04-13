@@ -93,10 +93,8 @@ python code/04_generate_visualizations.py
 
 ## Team
 
-- Darren (sd1511@georgetown.edu)
-- [Teammate 2]
-- [Teammate 3]
-- [Teammate 4]
+- Darren Deng (sd1511@georgetown.edu)
+- Marilyn Rutecki (mr1970@georgetown.edu)
 
 ## License
 
