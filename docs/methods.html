@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Methods &amp; Pipeline — SF Housing Analysis</title>
+  <title>Methods &amp; Pipeline | SF Housing Analysis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -28,9 +28,10 @@
 
   <h1>Methods &amp; Data Pipeline</h1>
   <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 32px;">
-    This page documents our end-to-end data pipeline—from raw data ingestion to
-    interactive visualizations. Every infrastructure choice is designed to be
-    scalable: the same code would handle datasets 1,000x larger with minimal changes.
+    This page walks through our data pipeline from raw ingestion to
+    interactive visualizations. Every infrastructure choice is built for
+    scale. The same code would handle datasets 1,000 times larger with
+    minimal changes.
   </p>
 
   <!-- ── Pipeline Diagram ── -->
@@ -69,19 +70,19 @@
   <div class="card">
     <h2>Phase 1: Data Ingestion</h2>
     <p>
-      All four datasets are downloaded programmatically using Python's <code>requests</code>
-      library and the respective APIs. The raw files are then uploaded to an
-      <strong>AWS S3 bucket</strong> using <code>boto3</code>, establishing S3
-      as our centralized data lake.
+      We download all four datasets programmatically using Python's
+      <code>requests</code> library and each source's API. Raw files are
+      then uploaded to an <strong>AWS S3 bucket</strong> via
+      <code>boto3</code>, which serves as our centralized data lake.
     </p>
 
     <h4>Why S3?</h4>
     <p>
-      S3 provides durable, scalable object storage that integrates natively with
-      both Snowflake (via external stages) and Databricks (via S3 mounts).
-      For production use, this pattern supports automatic data refresh:
-      a scheduled Lambda function could re-pull data from APIs daily and
-      land new files in S3, triggering downstream ETL.
+      S3 provides durable, scalable object storage that integrates natively
+      with both Snowflake (via external stages) and Databricks (via S3 mounts).
+      For production use, a scheduled Lambda function could re-pull data from
+      the source APIs daily, land new files in S3, and trigger downstream ETL
+      automatically.
     </p>
 
     <div class="code-block">
@@ -113,18 +114,19 @@ s3.upload_file(
   <div class="card">
     <h2>Phase 2: Snowflake ETL</h2>
     <p>
-      Snowflake serves as our primary transformation engine. We chose Snowflake
-      because it provides a fully managed, columnar SQL warehouse that requires
-      zero cluster management—ideal for teams that need powerful SQL analytics
-      without DevOps overhead.
+      Snowflake serves as our primary transformation engine. We chose it
+      because it offers a fully managed, columnar SQL warehouse with zero
+      cluster management. Teams get powerful SQL analytics without the
+      DevOps overhead.
     </p>
 
     <h4>Infrastructure Setup</h4>
     <p>
-      We created a dedicated database (<code>SF_HOUSING</code>) with two schemas:
-      <code>RAW</code> for staging and <code>ANALYTICS</code> for transformed data.
-      An external stage connects directly to our S3 bucket, enabling <code>COPY INTO</code>
-      commands that load CSVs into Snowflake tables in seconds.
+      We created a dedicated database (<code>SF_HOUSING</code>) with two
+      schemas: <code>RAW</code> for staging and <code>ANALYTICS</code> for
+      transformed data. An external stage connects directly to our S3 bucket.
+      <code>COPY INTO</code> commands then load CSVs into Snowflake tables
+      in seconds.
     </p>
 
     <div class="code-block">
@@ -137,8 +139,8 @@ s3.upload_file(
 
     <h4>Transformations</h4>
     <p>
-      The <code>ANALYTICS</code> schema contains cleaned tables and analytical views.
-      Key transformations include:
+      The <code>ANALYTICS</code> schema holds cleaned tables and analytical
+      views. Key transformations include:
     </p>
     <div class="card-grid">
       <div class="card card-accent-blue" style="margin-bottom: 0;">
@@ -151,21 +153,21 @@ s3.upload_file(
       </div>
       <div class="card card-accent-teal" style="margin-bottom: 0;">
         <h4>Aggregation Views</h4>
-        <p>Pre-computed views for permits trend, neighborhood rankings, change-of-use flows, and cross-analysis joins.</p>
+        <p>Pre-computed views for permit trends, neighborhood rankings, change-of-use flows, and cross-analysis joins.</p>
       </div>
       <div class="card card-accent-red" style="margin-bottom: 0;">
         <h4>Cross-Dataset Join</h4>
-        <p>Integrate permit, HPI, and Census datasets into unified analytical views, enabling combined analyses such as annual permit volume vs. house price trends.</p>
+        <p>Combine permit, HPI, and Census tables into unified analytical views, which enables joint analyses such as annual permit volume against house price trends.</p>
       </div>
     </div>
 
     <h4 style="margin-top: 24px;">Why Snowflake over Pandas?</h4>
     <p>
-      While this dataset fits in memory, Snowflake demonstrates a production-ready
-      pattern. If we scaled from one city to all 50 states (~50M+ permits),
-      Snowflake would handle the volume without code changes—just larger
-      warehouse sizes. The SQL-based approach also makes the pipeline
-      accessible to analysts who don't write Python.
+      This dataset fits in memory, but Snowflake demonstrates a production-ready
+      pattern. If we scaled from one city to all 50 states (roughly 50 million
+      permits), Snowflake would handle the volume without code changes. Only
+      the warehouse size would need to grow. The SQL-based approach also makes
+      the pipeline accessible to analysts who do not write Python.
     </p>
   </div>
 
@@ -173,11 +175,10 @@ s3.upload_file(
   <div class="card">
     <h2>Phase 3: PySpark Analysis (Databricks)</h2>
     <p>
-      As a complementary analysis, we processed the permits dataset using
-      <strong>PySpark on Databricks</strong> to demonstrate distributed computing
-      capabilities. This step is particularly relevant for a "what if" scenario:
-      if this analysis were expanded to cover all U.S. cities, Spark's distributed
-      execution would be essential.
+      We also processed the permits dataset with <strong>PySpark on Databricks</strong>
+      to demonstrate distributed computing. This step matters for a
+      "what if" scenario. If the analysis expanded to cover every U.S. city,
+      Spark's distributed execution would be essential.
     </p>
 
     <div class="code-block">
@@ -232,17 +233,18 @@ neighborhood_ranked = spark.sql(<span class="string">"""
     <h2>Phase 4: Visualization &amp; Delivery</h2>
     <p>
       Processed data is exported from Snowflake as CSV files and fed into a
-      Python visualization pipeline using <strong>Plotly</strong> (interactive charts)
-      and <strong>Folium</strong> (geographic maps). Each chart is exported as a
-      standalone HTML file and embedded in this GitHub Pages website.
+      Python visualization pipeline. We use <strong>Plotly</strong> for
+      interactive charts and <strong>Folium</strong> for geographic maps.
+      Each chart exports as a standalone HTML file and is embedded in this
+      GitHub Pages site.
     </p>
 
     <h4>Why Plotly + GitHub Pages?</h4>
     <p>
       This combination gives us rich interactivity (hover, zoom, pan) without
-      requiring a server. Every visualization loads directly in the browser,
-      making the analysis accessible to non-technical stakeholders—a key
-      requirement for policy communication.
+      needing a server. Every visualization loads directly in the browser.
+      That keeps the analysis accessible to non-technical stakeholders, which
+      is a core requirement for policy communication.
     </p>
 
     <h4>8 Visualizations Produced</h4>
@@ -252,11 +254,11 @@ neighborhood_ranked = spark.sql(<span class="string">"""
       </thead>
       <tbody>
         <tr><td>1</td><td>Housing Types Distribution</td><td>Bar Chart</td><td>Plotly</td></tr>
-        <tr><td>2</td><td>Permits Trend (2000–2025)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>2</td><td>Permits Trend (2000 to 2025)</td><td>Line Chart</td><td>Plotly</td></tr>
         <tr><td>3</td><td>Change of Building Use</td><td>Sankey Diagram</td><td>Plotly</td></tr>
         <tr><td>4</td><td>Permit Processing Time</td><td>Box Plot</td><td>Plotly</td></tr>
         <tr><td>5</td><td>Top 20 Neighborhoods</td><td>Horizontal Bar</td><td>Plotly</td></tr>
-        <tr><td>6</td><td>House Price Index (1975–2025)</td><td>Line Chart</td><td>Plotly</td></tr>
+        <tr><td>6</td><td>House Price Index (1975 to 2025)</td><td>Line Chart</td><td>Plotly</td></tr>
         <tr><td>7</td><td>Bay Area Median Rent Map</td><td>Interactive Map</td><td>Folium</td></tr>
         <tr><td>8</td><td>Permits vs. HPI (Dual-Axis)</td><td>Bar + Line</td><td>Plotly</td></tr>
       </tbody>
@@ -267,7 +269,7 @@ neighborhood_ranked = spark.sql(<span class="string">"""
   <div class="card">
     <h2>Reproducibility</h2>
     <p>
-      All code is available in our
+      All code lives in our
       <a href="https://github.com/Darren-Deng-GU/sf-housing-project" target="_blank">GitHub repository</a>.
       To reproduce the full pipeline:
     </p>
@@ -286,8 +288,8 @@ pip install -r requirements.txt
 
 <span class="comment"># 4. Run the pipeline</span>
 python code/01_data_ingestion.py        <span class="comment"># Download + upload to S3</span>
-<span class="comment"># → Run 02_snowflake_etl.sql in Snowflake Worksheet</span>
-<span class="comment"># → Export results to data/processed/</span>
+<span class="comment"># Run 02_snowflake_etl.sql in Snowflake Worksheet</span>
+<span class="comment"># Export results to data/processed/</span>
 python generate_charts.py               <span class="comment"># Generate 8 interactive charts</span>
     </div>
   </div>

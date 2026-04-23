@@ -30,8 +30,8 @@
   <h1>Visualizing Housing in the<br>San Francisco Bay Area</h1>
   <p>
     How do building permit approvals shape housing supply across the Bay Area?
-    An analysis of 200,000+ permits, land use records, and census data—built
-    on a scalable cloud pipeline with Snowflake, Spark, and AWS.
+    We analyzed more than 200,000 permits, land use records, and census data
+    on a scalable cloud pipeline built with Snowflake, Spark, and AWS.
   </p>
 </section>
 
@@ -61,37 +61,37 @@
   <div class="card">
     <h2>The Problem</h2>
     <p>
-      The San Francisco Bay Area faces one of the most severe housing affordability
-      crises in the United States. Median home prices exceed $1.3 million in San Francisco,
-      while median rents for a one-bedroom apartment top $3,000 per month. The gap between
-      housing demand and supply continues to widen, fueled by population growth, tech-sector
-      employment, and constrained land availability.
+      The San Francisco Bay Area faces one of the most severe housing
+      affordability crises in the United States. Median home prices in
+      San Francisco exceed $1.3 million. Median rent for a one-bedroom
+      apartment tops $3,000 per month. The gap between housing demand
+      and supply keeps widening, driven by population growth, tech-sector
+      hiring, and limited developable land.
     </p>
     <p>
-      A critical but often overlooked bottleneck is the <strong>building permit process</strong>.
-      How quickly permits are approved—and which neighborhoods receive the most development
-      activity—directly affects whether new housing units can keep pace with demand.
-      Understanding these patterns is essential for policymakers seeking to improve housing
-      supply through regulatory reform.
+      One often overlooked bottleneck is the <strong>building permit process</strong>.
+      The speed of approvals and the geography of development activity both
+      determine whether new housing can keep pace with demand. Understanding
+      these patterns helps policymakers design better regulatory reforms.
     </p>
   </div>
 
   <!-- ── Research Questions ── -->
   <div class="card">
     <h2>Research Questions</h2>
-    <p>This project investigates three interconnected policy questions:</p>
+    <p>This project investigates three connected policy questions:</p>
     <div class="card-grid">
       <div class="card card-accent-blue">
         <h4>Permit Efficiency</h4>
-        <p>How long does it take for building permits to move from filing to issuance, and how does this vary by permit type and neighborhood?</p>
+        <p>How long do permits take to move from filing to issuance? How does that vary by permit type and neighborhood?</p>
       </div>
       <div class="card card-accent-orange">
-        <h4>Supply & Demand</h4>
-        <p>Which neighborhoods are receiving the most development activity, and how does this correlate with housing costs and demographic patterns?</p>
+        <h4>Supply &amp; Demand</h4>
+        <p>Which neighborhoods see the most development? How does that line up with local housing costs and demographics?</p>
       </div>
       <div class="card card-accent-teal">
         <h4>Land Use Evolution</h4>
-        <p>How is land use changing across San Francisco? What types of conversions (commercial to residential, etc.) are most common?</p>
+        <p>How is land use changing across San Francisco? Which conversions, such as commercial to residential, are most common?</p>
       </div>
     </div>
   </div>
@@ -113,7 +113,7 @@
           <td><strong>Building Permits</strong></td>
           <td>SF Open Data (DataSF)</td>
           <td>~200,000+</td>
-          <td>1980–2024</td>
+          <td>1980 to 2024</td>
         </tr>
         <tr>
           <td><strong>Land Use Classification</strong></td>
@@ -125,7 +125,7 @@
           <td><strong>House Price Index</strong></td>
           <td>FRED (Federal Reserve)</td>
           <td>~200 quarters</td>
-          <td>1975–2024</td>
+          <td>1975 to 2024</td>
         </tr>
         <tr>
           <td><strong>Census ACS 5-Year</strong></td>
@@ -143,13 +143,13 @@
     <a href="methods.html" style="text-decoration: none;">
       <div class="card card-accent-blue">
         <h3>Methods &amp; Pipeline</h3>
-        <p>See how we built a scalable data pipeline with AWS S3, Snowflake, and PySpark to process and analyze the data.</p>
+        <p>See how we built a scalable data pipeline with AWS S3, Snowflake, and PySpark.</p>
       </div>
     </a>
     <a href="findings.html" style="text-decoration: none;">
       <div class="card card-accent-orange">
         <h3>Findings &amp; Visualizations</h3>
-        <p>Explore 8 interactive charts revealing patterns in permits, housing types, land use, and affordability.</p>
+        <p>Explore 8 interactive charts on permits, housing types, land use, and affordability.</p>
       </div>
     </a>
   </div>

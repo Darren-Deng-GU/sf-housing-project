@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Findings — SF Housing Analysis</title>
+  <title>Findings | SF Housing Analysis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -28,9 +28,9 @@
 
   <h1>Findings &amp; Visualizations</h1>
   <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px;">
-    Each visualization below is fully interactive—hover for details, zoom with scroll,
-    and use the toolbar to export as PNG. All charts are generated from data processed
-    through our Snowflake pipeline.
+    Every visualization below is fully interactive. Hover for details,
+    zoom with the scroll wheel, and use the toolbar to export as PNG. All
+    charts come from data processed through our Snowflake pipeline.
   </p>
 
   <!-- ── Chart 1: Housing Types ── -->
@@ -38,10 +38,11 @@
     <div class="card">
       <h3>1. Residential Housing Types</h3>
       <p class="chart-description">
-        Single-family homes dominate San Francisco's residential landscape, representing
-        the largest share of parcels. This concentration of single-family zoning is a
-        central factor in the housing shortage—it limits density in neighborhoods where
-        multi-family housing could significantly increase supply.
+        Single-family homes dominate San Francisco's residential landscape
+        and make up the largest share of parcels. This concentration of
+        single-family zoning is a central driver of the housing shortage.
+        It limits density in neighborhoods where multi-family housing could
+        significantly expand supply.
       </p>
       <iframe src="charts/housing_types.html" class="chart-frame" loading="lazy"></iframe>
     </div>
@@ -52,13 +53,14 @@
     <div class="card">
       <h3>2. Building Permits Issued Over Time</h3>
       <p class="chart-description">
-        Permit issuance shows clear cyclical patterns tied to economic conditions.
-        Over-the-Counter (OTC) Alterations consistently dominate, peaking above 37,000
-        annually in 2019. A sharp decline is visible during the 2008 financial crisis,
-        followed by a gradual recovery. The COVID-19 pandemic triggered another steep
-        drop in 2020—OTC permits fell from ~37,000 to ~19,500—with only partial recovery
-        since. New construction wood-frame permits declined from ~375/year (2000) to
-        under 50 by 2025, signaling a structural slowdown in new housing supply.
+        Permit issuance tracks economic cycles. Over-the-Counter (OTC)
+        Alterations consistently dominate, peaking above 37,000 annually in
+        2019. Issuance dropped sharply during the 2008 financial crisis and
+        recovered gradually. The COVID-19 pandemic triggered another steep
+        decline in 2020, with OTC permits falling from about 37,000 to
+        19,500. Only a partial recovery has followed. New construction
+        wood-frame permits dropped from about 375 per year in 2000 to under
+        50 by 2025, signaling a structural slowdown in new housing supply.
       </p>
       <iframe src="charts/permits_trend.html" class="chart-frame" loading="lazy"></iframe>
     </div>
@@ -69,13 +71,14 @@
     <div class="card">
       <h3>3. Changes in Building Use</h3>
       <p class="chart-description">
-        The Sankey diagram reveals the most common transitions between building use
-        categories. The largest flow is Single-Family to Two-Family conversions
-        (3,111 permits), followed by Two-Family to Apartments (1,816) and Retail
-        to Food/Beverage (1,723). These patterns reflect two trends: densification
-        of residential neighborhoods through unit subdivision, and commercial
-        adaptation as retail spaces convert to restaurants and food services—a
-        shift accelerated by changing consumer habits and remote work.
+        The Sankey diagram shows the most common transitions between
+        building use categories. The largest flow is Single-Family to
+        Two-Family conversions (3,111 permits), followed by Two-Family to
+        Apartments (1,816) and Retail to Food/Beverage (1,723). Two trends
+        emerge here: densification of residential neighborhoods through
+        unit subdivision, and commercial adaptation as retail space
+        converts to restaurants and food services. Changing consumer
+        habits and remote work have accelerated the commercial shift.
       </p>
       <iframe src="charts/change_of_use.html" class="chart-frame" style="min-height: 600px;" loading="lazy"></iframe>
     </div>
@@ -86,13 +89,13 @@
     <div class="card">
       <h3>4. Permit Processing Time Distribution</h3>
       <p class="chart-description">
-        Processing times vary dramatically by permit type. New Construction permits
-        show the widest distribution, with some projects taking over 1,000 days
-        from filing to completion. Even common Additions/Alterations permits show
-        significant spread, with medians often exceeding 100 days. These delays
-        represent a direct drag on housing supply—every month of bureaucratic delay
-        is a month that new units are not available to residents, compounding the
-        affordability crisis.
+        Processing times vary dramatically by permit type. New Construction
+        permits show the widest distribution, with some projects taking
+        over 1,000 days from filing to completion. Even common Additions
+        and Alterations permits show significant spread, with medians often
+        above 100 days. These delays drag directly on housing supply. Every
+        month of bureaucratic delay keeps new units off the market and
+        compounds the affordability crisis.
       </p>
       <iframe src="charts/processing_time.html" class="chart-frame" loading="lazy"></iframe>
     </div>
@@ -103,12 +106,13 @@
     <div class="card">
       <h3>5. Top Neighborhoods by Permit Activity</h3>
       <p class="chart-description">
-        Development activity is heavily concentrated in a handful of neighborhoods.
-        Financial District/South Beach leads with over 135,000 permits, followed by
-        Sunset/Parkside (~79,000) and the Mission District (~78,000). The top five
-        neighborhoods account for roughly one-third of all permit activity citywide,
-        suggesting that development benefits—and pressures—are unevenly distributed
-        across San Francisco.
+        Development activity concentrates in a handful of neighborhoods.
+        Financial District/South Beach leads with over 135,000 permits,
+        followed by Sunset/Parkside (about 79,000) and the Mission District
+        (about 78,000). The top five neighborhoods account for roughly
+        one-third of all permit activity citywide. Both the benefits and
+        pressures of development are distributed unevenly across
+        San Francisco.
       </p>
       <iframe src="charts/neighborhoods.html" class="chart-frame" style="min-height: 650px;" loading="lazy"></iframe>
     </div>
@@ -117,13 +121,14 @@
   <!-- ── Chart 6: HPI ── -->
   <div class="chart-section">
     <div class="card">
-      <h3>6. House Price Index (1975–2024)</h3>
+      <h3>6. House Price Index (1975 to 2024)</h3>
       <p class="chart-description">
-        The All-Transactions House Price Index for the San Francisco MSA shows
-        a long-term upward trajectory with notable disruptions—the dot-com bust
-        (2000), the financial crisis (2008), and the pandemic dip (2020). Despite
-        periodic corrections, prices have consistently recovered to new highs,
-        underscoring the structural nature of the Bay Area's affordability challenge.
+        The All-Transactions House Price Index for the San Francisco MSA
+        trends steadily upward, with notable disruptions during the dot-com
+        bust (2000), the financial crisis (2008), and the pandemic dip
+        (2020). Prices have recovered to new highs after every correction.
+        That pattern underscores the structural nature of the Bay Area's
+        affordability challenge.
       </p>
       <iframe src="charts/hpi.html" class="chart-frame" loading="lazy"></iframe>
     </div>
@@ -134,13 +139,13 @@
     <div class="card">
       <h3>7. Median Rent Across the Bay Area</h3>
       <p class="chart-description">
-        This interactive map visualizes median gross rent across the nine Bay Area
-        counties using 2023 American Community Survey data. San Mateo County has the
-        highest median rent ($3,006), followed by Santa Clara ($2,934) and Marin
-        ($2,603). San Francisco itself sits at $2,583. The most affordable counties
-        are Sonoma ($2,072) and Solano ($2,143)—yet even these "affordable" areas far
-        exceed national averages. Click on county markers for detailed statistics
-        including median income and population.
+        This interactive map shows median gross rent across the nine Bay
+        Area counties, using 2023 American Community Survey data. San Mateo
+        County has the highest median rent at $3,006, followed by Santa
+        Clara ($2,934) and Marin ($2,603). San Francisco sits at $2,583.
+        Sonoma ($2,072) and Solano ($2,143) are the most affordable
+        counties, yet both still exceed national averages by a wide margin.
+        Click any county marker for details on median income and population.
       </p>
       <iframe src="charts/rent_map.html" class="chart-frame" style="min-height: 500px;" loading="lazy"></iframe>
     </div>
@@ -151,13 +156,14 @@
     <div class="card">
       <h3>8. Permit Volume vs. House Price Index</h3>
       <p class="chart-description">
-        <strong>Cross-analysis:</strong> This dual-axis chart overlays annual permit
-        volume (bars) with the house price index (line). A striking pattern emerges:
-        while house prices climbed steadily from an index of ~170 (2000) to over 500
-        (2025), permit volume peaked around 2018–2019 and then sharply declined post-COVID.
-        The divergence since 2020—rising prices amid falling permits—suggests that
-        reduced construction activity is further tightening supply and accelerating
-        price increases, creating a feedback loop that deepens the affordability crisis.
+        <strong>Cross-analysis:</strong> This dual-axis chart overlays
+        annual permit volume (bars) with the house price index (line).
+        House prices climbed steadily from an index of about 170 in 2000 to
+        over 500 by 2025. Permit volume peaked around 2018 to 2019 and
+        dropped sharply after COVID. Since 2020, rising prices have
+        coincided with falling permits. Reduced construction appears to be
+        tightening supply and accelerating price increases, creating a
+        feedback loop that deepens the affordability crisis.
       </p>
       <iframe src="charts/permits_vs_hpi.html" class="chart-frame" loading="lazy"></iframe>
     </div>
@@ -169,15 +175,15 @@
     <div class="card-grid">
       <div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 8px;">
         <h4 style="color: #EFD28D;">Permit Bottleneck</h4>
-        <p>Processing times frequently exceed 100 days and can stretch beyond 1,000 days for complex projects, representing a significant barrier to new housing supply. Streamlining the approval process could accelerate unit delivery.</p>
+        <p>Processing times frequently exceed 100 days and can stretch past 1,000 days for complex projects. Streamlining the approval process could accelerate unit delivery.</p>
       </div>
       <div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 8px;">
         <h4 style="color: #EFD28D;">Concentrated Development</h4>
-        <p>The top 5 neighborhoods account for roughly one-third of all permits, with Financial District/South Beach alone contributing over 135,000. Development benefits are not evenly distributed across the city.</p>
+        <p>The top 5 neighborhoods account for roughly one-third of all permits. Financial District/South Beach alone contributes over 135,000. Development benefits are distributed unevenly across the city.</p>
       </div>
       <div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 8px;">
         <h4 style="color: #EFD28D;">Use Conversion Trend</h4>
-        <p>Commercial-to-residential conversions are increasing, presenting a policy opportunity to incentivize adaptive reuse of underutilized commercial space.</p>
+        <p>Commercial-to-residential conversions are rising. That creates a policy opportunity to incentivize adaptive reuse of underutilized commercial space.</p>
       </div>
     </div>
   </div>
@@ -186,22 +192,22 @@
   <div class="card">
     <h2>Future Directions</h2>
     <p>
-      This proof-of-concept demonstrates the viability of a scalable analytics
-      pipeline for housing policy research. With additional funding, we propose
-      expanding in three directions:
+      This proof-of-concept shows the viability of a scalable analytics
+      pipeline for housing policy research. With additional funding, we
+      propose expanding in three directions:
     </p>
     <div class="card-grid">
       <div class="card card-accent-blue" style="margin-bottom: 0;">
         <h4>Scale to 50 States</h4>
-        <p>Apply the same pipeline to permit data from all major U.S. metro areas, enabling cross-city comparisons of regulatory efficiency.</p>
+        <p>Apply the same pipeline to permit data from all major U.S. metro areas and enable cross-city comparisons of regulatory efficiency.</p>
       </div>
       <div class="card card-accent-orange" style="margin-bottom: 0;">
         <h4>Predictive Modeling</h4>
-        <p>Build ML models to forecast permit processing times based on project characteristics, neighborhood, and historical patterns.</p>
+        <p>Build ML models to forecast permit processing times from project characteristics, neighborhood, and historical patterns.</p>
       </div>
       <div class="card card-accent-teal" style="margin-bottom: 0;">
         <h4>Real-Time Dashboard</h4>
-        <p>Deploy a live dashboard with automated data refresh, enabling policymakers to monitor development trends as they unfold.</p>
+        <p>Deploy a live dashboard with automated data refresh so policymakers can monitor development trends as they unfold.</p>
       </div>
     </div>
   </div>
